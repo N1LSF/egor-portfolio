@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEO Гайд — Egor Malakhov</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@300;400;500;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 400;
+      color: #1a1a1a;
+      background: linear-gradient(135deg, #f0e6f6 0%, #e8eaf6 25%, #f5e6f0 50%, #e6f0f5 75%, #f0e6f6 100%);
+      min-height: 100vh;
+      padding: 60px 40px;
+      line-height: 1.6;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    @media print {
+      body {
+        padding: 40px 30px;
+        background: linear-gradient(135deg, #f0e6f6 0%, #e8eaf6 25%, #f5e6f0 50%, #e6f0f5 75%, #f0e6f6 100%);
+      }
+      .page-break {
+        page-break-before: always;
+      }
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* ─── HEADER ─── */
+    .header {
+      margin-bottom: 50px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    .header-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 16px;
+    }
+
+    .header h1 {
+      font-family: 'Anton', sans-serif;
+      font-size: 64px;
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+
+    .header p {
+      font-weight: 300;
+      font-size: 16px;
+      color: #555;
+      max-width: 500px;
+    }
+
+    /* ─── SECTIONS ─── */
+    .section {
+      margin-bottom: 48px;
+    }
+
+    .section-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #aaa;
+      margin-bottom: 8px;
+    }
+
+    .section h2 {
+      font-family: 'Anton', sans-serif;
+      font-size: 32px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      line-height: 1.1;
+    }
+
+    .section h3 {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 8px;
+      margin-top: 24px;
+      color: #1a1a1a;
+    }
+
+    .section p,
+    .section li {
+      font-weight: 300;
+      font-size: 14px;
+      color: #444;
+      line-height: 1.8;
+    }
+
+    /* ─── STEPS ─── */
+    .steps {
+      list-style: none;
+      padding: 0;
+      counter-reset: step;
+    }
+
+    .steps li {
+      counter-increment: step;
+      padding: 12px 0 12px 48px;
+      position: relative;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #555;
+    }
+
+    /* ─── CODE / URL ─── */
+    .url-block {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      background: rgba(0,0,0,0.04);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 8px;
+      padding: 14px 20px;
+      margin: 16px 0;
+      color: #333;
+    }
+
+    /* ─── TABLE ─── */
+    .timing-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+
+    .timing-table th,
+    .timing-table td {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 400;
+    }
+
+    .timing-table th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #999;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .timing-table td {
+      font-weight: 300;
+      color: #444;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+
+    /* ─── CARD ─── */
+    .card {
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin: 20px 0;
+    }
+
+    /* ─── CHECKLIST ─── */
+    .checklist {
+      list-style: none;
+      padding: 0;
+    }
+
+    .checklist li {
+      padding: 10px 0 10px 36px;
+      position: relative;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .checklist li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 12px;
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      border: 1.5px solid rgba(0,0,0,0.15);
+    }
+
+    /* ─── TIPS ─── */
+    .tip {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 6px 0;
+      font-size: 14px;
+      font-weight: 300;
+      color: #444;
+    }
+
+    .tip-icon {
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      margin-top: 60px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-brand {
+      font-family: 'Anton', sans-serif;
+      font-size: 18px;
+      text-transform: uppercase;
+    }
+
+    .footer-sub {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #999;
+    }
+
+    /* ─── NOTE ─── */
+    .note {
+      background: rgba(0,0,0,0.03);
+      border-left: 3px solid rgba(0,0,0,0.15);
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 20px 0;
+      font-size: 13px;
+      font-weight: 300;
+      color: #555;
+      line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-label">Документация для клиента</div>
+      <h1>SEO<br/>ГАЙД</h1>
+      <p>Пошаговая инструкция по настройке видимости вашего сайта в поисковых системах Google и Яндекс.</p>
+    </div>
+
+    <!-- SECTION 1: GOOGLE -->
+    <div class="section">
+      <div class="section-number">01</div>
+      <h2>Google Search Console</h2>
+      <p>Бесплатный инструмент Google для добавления вашего сайта в поисковую выдачу.</p>
+
+      <h3>Подключение</h3>
+      <ol class="steps">
+        <li>Зайдите на <strong>search.google.com/search-console</strong></li>
+        <li>Войдите через Google-аккаунт</li>
+        <li>Нажмите <strong>«Добавить ресурс»</strong></li>
+        <li>Выберите <strong>«Домен»</strong> и введите ваш домен</li>
+        <li>Скопируйте <strong>TXT-запись</strong>, которую предложит Google</li>
+        <li>Перейдите в панель регистратора домена → <strong>DNS-записи</strong> → добавьте TXT-запись</li>
+        <li>Вернитесь в Search Console → нажмите <strong>«Подтвердить»</strong></li>
+      </ol>
+
+      <h3>После подтверждения</h3>
+      <p>Перейдите в раздел <strong>«Файлы Sitemap»</strong> и добавьте карту сайта:</p>
+      <div class="url-block">https://ваш-сайт.ru/sitemap.xml</div>
+    </div>
+
+    <!-- SECTION 2: YANDEX -->
+    <div class="section">
+      <div class="section-number">02</div>
+      <h2>Яндекс Вебмастер</h2>
+      <p>Аналог Google Search Console для Яндекса. Обязателен для русскоязычной аудитории.</p>
+
+      <h3>Подключение</h3>
+      <ol class="steps">
+        <li>Зайдите на <strong>webmaster.yandex.ru</strong></li>
+        <li>Войдите через Яндекс-аккаунт</li>
+        <li>Нажмите <strong>«Добавить сайт»</strong></li>
+        <li>Введите адрес вашего сайта</li>
+        <li>Выберите способ подтверждения — <strong>DNS-запись</strong></li>
+        <li>Скопируйте TXT-запись и добавьте в DNS</li>
+        <li>Нажмите <strong>«Проверить»</strong></li>
+      </ol>
+
+      <h3>После подтверждения</h3>
+      <p>Перейдите в <strong>«Индексирование» → «Файлы Sitemap»</strong> и добавьте:</p>
+      <div class="url-block">https://ваш-сайт.ru/sitemap.xml</div>
+    </div>
+
+    <!-- SECTION 3: SITEMAP -->
+    <div class="section">
+      <div class="section-number">03</div>
+      <h2>Что такое Sitemap?</h2>
+      <div class="card">
+        <p><strong>Sitemap (карта сайта)</strong> — файл, который сообщает поисковым системам какие страницы существуют на вашем сайте и помогает их быстрее проиндексировать.</p>
+        <br/>
+        <p>Мы уже настроили автоматическую генерацию sitemap для вашего сайта. Он доступен по адресу:</p>
+        <div class="url-block">https://ваш-сайт.ru/sitemap.xml</div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: TIMING -->
+    <div class="section page-break">
+      <div class="section-number">04</div>
+      <h2>Сроки индексации</h2>
+      <table class="timing-table">
+        <thead>
+          <tr>
+            <th>Поисковик</th>
+            <th>Первое появление</th>
+            <th>Полная индексация</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Google</td>
+            <td>2 – 7 дней</td>
+            <td>2 – 4 недели</td>
+          </tr>
+          <tr>
+            <td>Яндекс</td>
+            <td>1 – 2 недели</td>
+            <td>2 – 6 недель</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="note">
+        Это нормальные сроки. Поисковики сами определяют приоритет индексации. Ускорить процесс можно через кнопку <strong>«Запросить индексирование»</strong> в Google Search Console.
+      </div>
+    </div>
+
+    <!-- SECTION 5: TIPS -->
+    <div class="section">
+      <div class="section-number">05</div>
+      <h2>Как ускорить индексацию</h2>
+      <div class="card">
+        <div class="tip"><span class="tip-icon">✓</span> Добавьте sitemap в оба сервиса</div>
+        <div class="tip"><span class="tip-icon">✓</span> Запросите индексирование главной страницы вручную</div>
+        <div class="tip"><span class="tip-icon">✓</span> Публикуйте ссылку на сайт в соцсетях</div>
+        <div class="tip"><span class="tip-icon">✓</span> Регулярно добавляйте контент — статьи, новости</div>
+        <div class="tip"><span class="tip-icon">✗</span> Не используйте накрутки и спам-ссылки</div>
+      </div>
+    </div>
+
+    <!-- SECTION 6: CHECKLIST -->
+    <div class="section">
+      <div class="section-number">06</div>
+      <h2>Чек-лист</h2>
+      <ul class="checklist">
+        <li>Google Search Console — сайт добавлен и подтверждён</li>
+        <li>Яндекс Вебмастер — сайт добавлен и подтверждён</li>
+        <li>Sitemap отправлен в Google</li>
+        <li>Sitemap отправлен в Яндекс</li>
+        <li>Главная страница запрошена на индексирование</li>
+        <li>Через 2 недели — проверить появление в поиске</li>
+      </ul>
+    </div>
+
+    <!-- SECTION 7: CHECK -->
+    <div class="section">
+      <div class="section-number">07</div>
+      <h2>Как проверить</h2>
+      <p>Введите в Google или Яндекс:</p>
+      <div class="url-block">site:ваш-сайт.ru</div>
+      <p>Если видите страницы — сайт проиндексирован.</p>
+
+      <div class="note">
+        <strong>Важно:</strong> SEO — это марафон, не спринт. Первые результаты появятся через 2–4 недели. Для выхода в ТОП по конкурентным запросам может потребоваться несколько месяцев регулярной работы над контентом.
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <div>
+        <div class="footer-brand">Egor Malakhov</div>
+      </div>
+      <div class="footer-sub">Creative Developer</div>
+    </div>
+
+  </div>
+</body>
+</html>

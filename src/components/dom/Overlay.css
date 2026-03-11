@@ -1,0 +1,125 @@
+/* src/components/dom/Overlay.css */
+
+.hero-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  z-index: 10;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.hero {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 8vw;
+  padding-right: 8vw;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.hero-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.reveal-line {
+  overflow: hidden;
+  position: relative;
+}
+
+.reveal-inner {
+  will-change: transform, filter;
+  visibility: hidden;
+}
+
+.hero-name {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(60px, 10vw, 160px);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  margin: 0;
+  color: #0a0a0a;
+}
+
+.hero-role {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(9px, 0.8vw, 13px);
+  font-weight: 400;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  margin: 0;
+  margin-left: 0.4em;
+  padding: 2vh 0;
+  color: #999;
+}
+
+.hero-desc {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(11px, 0.9vw, 15px);
+  font-weight: 300;
+  line-height: 1.7;
+  color: #555;
+  max-width: 100%;
+  margin-top: 2.5vh;
+  margin-left: 0.3em;
+  visibility: hidden;
+}
+
+.hero-stats {
+  position: absolute;
+  bottom: 5vh;
+  left: 8vw;
+  display: flex;
+  gap: 4vw;
+}
+
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  visibility: hidden;
+}
+
+.hero-stat-number {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(24px, 2.5vw, 40px);
+  color: #0a0a0a;
+  line-height: 1;
+}
+
+.hero-stat-label {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(9px, 0.7vw, 11px);
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #999;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 5vh;
+  right: 8vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  visibility: hidden;
+  color: #bbb;
+}
+
+.scroll-hint span {
+  font-family: 'Manrope', sans-serif;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}

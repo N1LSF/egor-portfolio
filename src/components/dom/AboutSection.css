@@ -1,0 +1,478 @@
+/* src/components/dom/AboutSection.css */
+
+/* ═══════════════════════════════════════
+   ABOUT SECTION — HUD / Scan Aesthetic
+   with scroll-driven motion design
+   ═══════════════════════════════════════ */
+
+.about-section {
+  position: relative;
+  width: 100%;
+  min-height: 120vh;
+  padding: 15vh 8vw;
+  display: flex;
+  align-items: center;
+  background: #050505;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+/* ── Grid Layout ── */
+.about-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 6vw;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: center;
+}
+
+/* ═══════════════════════════════════════
+   PHOTO BLOCK
+   ═══════════════════════════════════════ */
+
+.about-photo-wrapper {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  max-width: 480px;
+  width: 100%;
+  will-change: transform;
+}
+
+/* ── Corner Marks (targeting frame) ── */
+.corner-marks {
+  position: absolute;
+  inset: -14px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.corner-mark {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  will-change: transform;
+}
+
+.corner-mark::before,
+.corner-mark::after {
+  content: '';
+  position: absolute;
+  background: rgba(255, 255, 255, 0.35);
+  transition: background 0.4s ease;
+}
+
+.corner-mark::before {
+  width: 24px;
+  height: 1px;
+}
+
+.corner-mark::after {
+  width: 1px;
+  height: 24px;
+}
+
+.about-photo:hover ~ .corner-marks .corner-mark::before,
+.about-photo:hover ~ .corner-marks .corner-mark::after {
+  background: rgba(180, 220, 255, 0.6);
+}
+
+/* Top-left */
+.corner-mark.tl { top: 0; left: 0; }
+.corner-mark.tl::before { top: 0; left: 0; }
+.corner-mark.tl::after { top: 0; left: 0; }
+
+/* Top-right */
+.corner-mark.tr { top: 0; right: 0; }
+.corner-mark.tr::before { top: 0; right: 0; }
+.corner-mark.tr::after { top: 0; right: 0; }
+
+/* Bottom-left */
+.corner-mark.bl { bottom: 0; left: 0; }
+.corner-mark.bl::before { bottom: 0; left: 0; }
+.corner-mark.bl::after { bottom: 0; left: 0; }
+
+/* Bottom-right */
+.corner-mark.br { bottom: 0; right: 0; }
+.corner-mark.br::before { bottom: 0; right: 0; }
+.corner-mark.br::after { bottom: 0; right: 0; }
+
+/* ── Photo container ── */
+.about-photo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 2px;
+  perspective: 800px;
+}
+
+.about-photo-img {
+  width: 110%;
+  height: 110%;
+  margin: -5%;
+  object-fit: cover;
+  display: block;
+  will-change: transform;
+  filter: grayscale(0.2) contrast(1.05) brightness(0.95);
+  transition: filter 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.about-photo:hover .about-photo-img {
+  filter: grayscale(0) contrast(1.1) brightness(1);
+}
+
+/* ── Scanlines overlay (CRT texture) ── */
+.photo-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.04) 2px,
+    rgba(0, 0, 0, 0.04) 4px
+  );
+  z-index: 2;
+}
+
+/* ── Animated scan line (entrance) ── */
+.scan-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(180, 220, 255, 0.4) 15%,
+    rgba(180, 220, 255, 0.8) 50%,
+    rgba(180, 220, 255, 0.4) 85%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 30px rgba(180, 220, 255, 0.3),
+    0 0 80px rgba(180, 220, 255, 0.08);
+  opacity: 0;
+}
+
+/* ── Ambient scan line (always looping) ── */
+.ambient-scan {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(180, 220, 255, 0.15) 30%,
+    rgba(180, 220, 255, 0.25) 50%,
+    rgba(180, 220, 255, 0.15) 70%,
+    transparent 100%
+  );
+  opacity: 0.6;
+  animation: ambientScan 6s ease-in-out infinite;
+}
+
+@keyframes ambientScan {
+  0% { top: -2%; opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.6; }
+  100% { top: 102%; opacity: 0; }
+}
+
+/* ── RGB Glitch flash ── */
+@keyframes rgbGlitch {
+  0% {
+    filter: grayscale(0.2) contrast(1.05) brightness(0.95);
+    transform: translate(0, 0);
+  }
+  10% {
+    filter: grayscale(0) contrast(1.3) saturate(1.5) brightness(1.1);
+    transform: translate(-3px, 1px);
+  }
+  20% {
+    filter: grayscale(0) contrast(1.1) brightness(1);
+    transform: translate(3px, -1px);
+  }
+  30% {
+    filter: grayscale(0) contrast(1.4) hue-rotate(5deg);
+    transform: translate(-1px, 0);
+  }
+  50% {
+    filter: grayscale(0.2) contrast(1.05) brightness(0.95);
+    transform: translate(0, 0);
+  }
+  100% {
+    filter: grayscale(0.2) contrast(1.05) brightness(0.95);
+    transform: translate(0, 0);
+  }
+}
+
+.about-photo.glitch-flash .about-photo-img {
+  animation: rgbGlitch 0.4s ease-out;
+}
+
+.about-photo.glitch-flash::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  mix-blend-mode: screen;
+  animation: rgbSplit 0.4s ease-out;
+  background: linear-gradient(
+    transparent 0%,
+    rgba(255, 0, 50, 0.1) 20%,
+    transparent 25%,
+    rgba(0, 100, 255, 0.1) 55%,
+    transparent 60%,
+    rgba(0, 255, 150, 0.08) 80%,
+    transparent 100%
+  );
+}
+
+@keyframes rgbSplit {
+  0% { opacity: 0; transform: translateX(0); }
+  15% { opacity: 1; transform: translateX(-4px); }
+  35% { opacity: 1; transform: translateX(4px); }
+  55% { opacity: 0.5; transform: translateX(-2px); }
+  100% { opacity: 0; transform: translateX(0); }
+}
+
+/* ── Photo ID tag ── */
+.photo-id-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.08em;
+}
+
+.id-tag-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ═══════════════════════════════════════
+   INFO BLOCK
+   ═══════════════════════════════════════ */
+
+.about-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4vh;
+  will-change: transform;
+}
+
+.about-data {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Section label ── */
+.about-section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 3vh;
+}
+
+.label-slash {
+  color: rgba(180, 220, 255, 0.45);
+  margin-right: 6px;
+}
+
+/* ── Name ── */
+.about-name {
+  font-family: 'Anton', sans-serif;
+  font-size: clamp(40px, 5vw, 80px);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 3.5vh;
+}
+
+.name-line {
+  overflow: hidden;
+  display: block;
+}
+
+.name-inner {
+  display: block;
+  will-change: transform, opacity;
+}
+
+/* ── Separator ── */
+.about-separator {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(180, 220, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  margin-bottom: 2.5vh;
+  will-change: transform;
+}
+
+/* ── Data rows ── */
+.about-row {
+  display: flex;
+  align-items: baseline;
+  gap: 2vw;
+  padding: 0.8vh 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.035);
+  will-change: transform;
+  transition: border-color 0.3s ease;
+}
+
+.about-row:hover {
+  border-bottom-color: rgba(180, 220, 255, 0.15);
+}
+
+.about-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  min-width: 130px;
+  flex-shrink: 0;
+  transition: color 0.3s ease;
+}
+
+.about-row:hover .about-label {
+  color: rgba(180, 220, 255, 0.5);
+}
+
+.about-value {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(14px, 1.1vw, 17px);
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.7);
+  visibility: hidden;
+}
+
+/* ── Status indicator ── */
+.status-value {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  transition: background 0.6s ease, box-shadow 0.6s ease;
+  flex-shrink: 0;
+}
+
+.status-indicator.active {
+  background: #4ade80;
+  box-shadow:
+    0 0 8px rgba(74, 222, 128, 0.6),
+    0 0 24px rgba(74, 222, 128, 0.2);
+  animation: statusPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.6), 0 0 24px rgba(74, 222, 128, 0.2);
+  }
+  50% {
+    opacity: 0.5;
+    box-shadow: 0 0 4px rgba(74, 222, 128, 0.3), 0 0 12px rgba(74, 222, 128, 0.1);
+  }
+}
+
+/* ═══════════════════════════════════════
+   BIO TEXT — LARGER, SCROLL-REACTIVE
+   ═══════════════════════════════════════ */
+
+.about-bio {
+  margin-top: 3vh;
+}
+
+.bio-line {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(16px, 1.3vw, 22px);
+  font-weight: 300;
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.3);
+  will-change: transform, opacity, filter, color;
+  transition: color 0.4s ease;
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════ */
+
+@media (max-width: 900px) {
+  .about-section {
+    padding: 10vh 6vw;
+    min-height: auto;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 6vh;
+  }
+
+  .about-photo-wrapper {
+    max-width: 340px;
+    margin: 0 auto;
+  }
+
+  .about-label {
+    min-width: 100px;
+  }
+
+  .bio-line {
+    font-size: clamp(14px, 3.5vw, 18px);
+  }
+}
+
+@media (max-width: 600px) {
+  .about-section {
+    padding: 8vh 5vw;
+  }
+
+  .about-photo-wrapper {
+    max-width: 280px;
+  }
+
+  .about-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .about-label {
+    min-width: unset;
+  }
+
+  .bio-line {
+    font-size: clamp(14px, 4vw, 17px);
+    line-height: 1.8;
+  }
+}
