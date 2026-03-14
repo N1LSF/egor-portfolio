@@ -43,7 +43,7 @@ export default function Overlay() {
   }, [isLoaded])
 
   return (
-    <div ref={containerRef} id="hero-overlay" className="hero-container" data-cursor="dark">
+    <div ref={containerRef} id="hero-overlay" className="hero-container" data-cursor="light">
       <div className="hero">
         <div className="hero-text">
           <div className="reveal-line">
