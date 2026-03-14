@@ -1,14 +1,16 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { useAppStore } from '../../store'
+import { tr } from '../../i18n'
 import './Overlay.css'
+
 
 export default function Overlay() {
   const containerRef = useRef<HTMLDivElement>(null!)
   const isLoaded = useAppStore((s) => s.isLoaded)
+  const lang = useAppStore((s) => s.lang)
   const hasAnimated = useRef(false)
 
-  // Hero appear animation
   useEffect(() => {
     if (!isLoaded || hasAnimated.current) return
     hasAnimated.current = true
@@ -41,41 +43,38 @@ export default function Overlay() {
   }, [isLoaded])
 
   return (
-    <div ref={containerRef} id="hero-overlay" className="hero-container">
+    <div ref={containerRef} id="hero-overlay" className="hero-container" data-cursor="dark">
       <div className="hero">
         <div className="hero-text">
           <div className="reveal-line">
             <h1 className="reveal-inner hero-name">Egor</h1>
           </div>
           <div className="reveal-line">
-            <p className="reveal-inner hero-role">Creative Developer</p>
+            <p className="reveal-inner hero-role">{tr('hero.role', lang)}</p>
           </div>
           <div className="reveal-line">
             <h1 className="reveal-inner hero-name">Malakhov</h1>
           </div>
-          <p className="hero-desc">
-            Crafting immersive digital experiences with clean code,
-            thoughtful design and obsessive attention to detail.
-          </p>
+          <p className="hero-desc">{tr('hero.desc', lang)}</p>
         </div>
 
         <div className="hero-stats">
           <div className="hero-stat">
             <span className="hero-stat-number">2+</span>
-            <span className="hero-stat-label">Years Experience</span>
+            <span className="hero-stat-label">{tr('hero.years', lang)}</span>
           </div>
           <div className="hero-stat">
             <span className="hero-stat-number">30+</span>
-            <span className="hero-stat-label">Projects Done</span>
+            <span className="hero-stat-label">{tr('hero.projects', lang)}</span>
           </div>
           <div className="hero-stat">
             <span className="hero-stat-number">100%</span>
-            <span className="hero-stat-label">Clean Code</span>
+            <span className="hero-stat-label">{tr('hero.code', lang)}</span>
           </div>
         </div>
 
         <div className="scroll-hint">
-          <span>Scroll</span>
+          <span>{tr('hero.scroll', lang)}</span>
           <svg width="14" height="22" viewBox="0 0 14 22" fill="none" stroke="currentColor" strokeWidth="1.2">
             <rect x="1" y="1" width="12" height="20" rx="6" />
             <line x1="7" y1="5" x2="7" y2="9" />

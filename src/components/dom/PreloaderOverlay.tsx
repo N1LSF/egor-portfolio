@@ -124,9 +124,9 @@ export default function PreloaderOverlay() {
             }}
             className="pearl-text"
             style={{
-              fontFamily: "'Anton', sans-serif",
+              fontFamily: "'Unbounded', sans-serif",
               fontSize: '7vw',
-              fontWeight: 400,
+              fontWeight: 800,
               display: 'inline-block',
               willChange: 'transform, opacity, filter',
             }}

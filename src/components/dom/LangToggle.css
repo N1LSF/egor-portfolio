@@ -1,0 +1,111 @@
+.lang-toggle {
+  position: fixed;
+  top: 32px;
+  right: 32px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 6px 4px;
+  border: none;
+  border-radius: 40px;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  overflow: hidden;
+  isolation: isolate;
+  background: transparent;
+
+  --light-fill: 0%;
+  --text-inactive: rgba(255, 255, 255, 0.35);
+  --text-active: rgba(255, 255, 255, 1);
+  --text-divider: rgba(255, 255, 255, 0.12);
+}
+
+/* ── Background layers ── */
+.lang-bg {
+  position: absolute;
+  inset: 0;
+  border-radius: 40px;
+  pointer-events: none;
+}
+
+/* Dark (base — always visible) */
+.lang-bg--dark {
+  z-index: 0;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: border-color 0.3s ease;
+}
+
+/* Light (fills from bottom via clip-path) */
+.lang-bg--light {
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  clip-path: inset(calc(100% - var(--light-fill)) 0 0 0);
+}
+
+/* ── Slider (pearl — universal) ── */
+.lang-slider {
+  position: absolute;
+  top: 3px;
+  width: 50%;
+  height: calc(100% - 6px);
+  border-radius: 32px;
+  z-index: 2;
+  pointer-events: none;
+  transition: left 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  background: linear-gradient(
+    135deg,
+    #e8e0f0 0%, #d4e4f7 20%, #f0d4e8 40%,
+    #dde8f8 60%, #e8d8f4 80%, #c8e0f0 100%
+  );
+  background-size: 400% 400%;
+  animation: pearlSlider 4s ease infinite;
+}
+
+@keyframes pearlSlider {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ── Text ── */
+.lang-option {
+  position: relative;
+  z-index: 3;
+  padding: 6px 12px;
+  user-select: none;
+  color: var(--text-inactive);
+  transition: none; /* JS controls color */
+}
+
+.lang-option--active {
+  color: var(--text-active);
+}
+
+.lang-divider {
+  position: relative;
+  z-index: 3;
+  font-weight: 300;
+  user-select: none;
+  color: var(--text-divider);
+  transition: none;
+}
+
+/* ── Hover ── */
+.lang-toggle:hover .lang-bg--dark {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.lang-toggle:hover .lang-bg--light {
+  border-color: rgba(120, 80, 200, 0.2);
+}

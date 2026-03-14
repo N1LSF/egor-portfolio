@@ -1,0 +1,509 @@
+.calc-section {
+  position: relative;
+  width: 100%;
+  background: #050505;
+  padding: 12vh 0;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ── Ambient ── */
+.calc-ambient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.calc-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+}
+
+.calc-orb--1 {
+  width: 50vw;
+  height: 50vw;
+  max-width: 600px;
+  max-height: 600px;
+  top: -10%;
+  left: -10%;
+  background: radial-gradient(circle, rgba(232, 224, 240, 0.06) 0%, transparent 70%);
+  animation: orbFloat1 16s ease-in-out infinite;
+}
+
+.calc-orb--2 {
+  width: 40vw;
+  height: 40vw;
+  max-width: 500px;
+  max-height: 500px;
+  bottom: -10%;
+  right: -5%;
+  background: radial-gradient(circle, rgba(212, 228, 247, 0.05) 0%, transparent 70%);
+  animation: orbFloat2 20s ease-in-out infinite;
+}
+
+/* ── Container ── */
+.calc-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 8vw;
+}
+
+/* ── Header ── */
+.calc-header {
+  margin-bottom: 6vh;
+}
+
+.calc-label {
+  color: rgba(255, 255, 255, 0.25) !important;
+  margin-bottom: 12px;
+}
+
+.calc-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(24px, 3vw, 48px);
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #fff;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin: 0 0 12px;
+}
+
+.calc-subtitle {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(13px, 1vw, 17px);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.35);
+  line-height: 1.6;
+  max-width: 500px;
+}
+
+/* ── Body ── */
+.calc-body {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 48px;
+  align-items: start;
+}
+
+/* ═══════════════════════════════════════
+   LEFT PANEL — Controls
+   ═══════════════════════════════════════ */
+
+.calc-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.calc-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.calc-group-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.calc-group-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.calc-group-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  min-width: 28px;
+  text-align: right;
+}
+
+/* ── Option buttons ── */
+.calc-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.calc-option {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition:
+    color 0.3s ease,
+    background 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.calc-option:hover {
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.calc-option--active {
+  color: #fff;
+  background: rgba(232, 224, 240, 0.08);
+  border-color: rgba(232, 224, 240, 0.2);
+  box-shadow: 0 0 20px rgba(232, 224, 240, 0.06);
+}
+
+/* ── Slider ── */
+.calc-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.calc-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(232, 224, 240, 0.9), rgba(212, 228, 247, 0.7));
+  box-shadow:
+    0 0 12px rgba(232, 224, 240, 0.3),
+    0 0 30px rgba(212, 228, 247, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  cursor: grab;
+  transition: box-shadow 0.3s ease;
+}
+
+.calc-slider::-webkit-slider-thumb:hover {
+  box-shadow:
+    0 0 16px rgba(232, 224, 240, 0.5),
+    0 0 40px rgba(212, 228, 247, 0.15);
+}
+
+.calc-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(232, 224, 240, 0.9), rgba(212, 228, 247, 0.7));
+  box-shadow: 0 0 12px rgba(232, 224, 240, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  cursor: grab;
+}
+
+.calc-slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.2);
+  letter-spacing: 0.1em;
+}
+
+/* ── Checkboxes ── */
+.calc-checks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.calc-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.calc-check:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.calc-check input {
+  display: none;
+}
+
+.calc-check-box {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.calc-check input:checked ~ .calc-check-box {
+  background: rgba(232, 224, 240, 0.15);
+  border-color: rgba(232, 224, 240, 0.35);
+}
+
+.calc-check-icon {
+  width: 10px;
+  height: 10px;
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.8);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transform: scale(0.5);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.calc-check input:checked ~ .calc-check-box .calc-check-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.calc-check-text {
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.55);
+  flex: 1;
+}
+
+.calc-check-price {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.25);
+  letter-spacing: 0.05em;
+}
+
+/* ═══════════════════════════════════════
+   RIGHT — Receipt
+   ═══════════════════════════════════════ */
+
+.calc-receipt {
+  position: sticky;
+  top: 10vh;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 32px 28px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.calc-receipt-header {
+  margin-bottom: 24px;
+}
+
+.calc-receipt-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.calc-receipt-line {
+  margin-top: 12px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(232, 224, 240, 0.12),
+    rgba(212, 228, 247, 0.08),
+    transparent
+  );
+}
+
+/* ── Receipt rows ── */
+.calc-receipt-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.calc-receipt-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.calc-receipt-row-label {
+  font-family: 'Manrope', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+}
+
+.calc-receipt-row-dots {
+  flex: 1;
+  border-bottom: 1px dotted rgba(255, 255, 255, 0.08);
+  margin-bottom: 3px;
+}
+
+.calc-receipt-row-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.65);
+  white-space: nowrap;
+}
+
+/* ── Divider ── */
+.calc-receipt-divider {
+  height: 1px;
+  margin-bottom: 20px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(232, 224, 240, 0.15) 50%,
+    transparent
+  );
+}
+
+/* ── Total ── */
+.calc-receipt-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.calc-receipt-total-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.calc-receipt-total-price {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.02em;
+  will-change: transform, opacity;
+}
+
+/* ── Note ── */
+.calc-receipt-note {
+  font-family: 'Manrope', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.2);
+  line-height: 1.5;
+  margin: 0 0 24px;
+}
+
+/* ── CTA Button ── */
+.calc-receipt-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 0;
+  border-radius: 10px;
+  border: 1px solid rgba(232, 224, 240, 0.15);
+  background: rgba(232, 224, 240, 0.05);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    color 0.3s ease,
+    background 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.calc-receipt-cta:hover {
+  color: #fff;
+  background: rgba(232, 224, 240, 0.1);
+  border-color: rgba(232, 224, 240, 0.3);
+  box-shadow:
+    0 0 30px rgba(232, 224, 240, 0.08),
+    0 0 60px rgba(212, 228, 247, 0.04);
+}
+
+.calc-receipt-cta-arrow {
+  transition: transform 0.3s ease;
+}
+
+.calc-receipt-cta:hover .calc-receipt-cta-arrow {
+  transform: translateX(4px);
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════ */
+
+@media (max-width: 900px) {
+  .calc-body {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .calc-receipt {
+    position: static;
+  }
+
+  .calc-container {
+    padding: 0 6vw;
+  }
+}
+
+@media (max-width: 600px) {
+  .calc-section {
+    padding: 8vh 0;
+  }
+
+  .calc-container {
+    padding: 0 5vw;
+  }
+
+  .calc-options {
+    flex-direction: column;
+  }
+
+  .calc-option {
+    width: 100%;
+    text-align: center;
+  }
+
+  .calc-receipt-total-price {
+    font-size: 26px;
+  }
+}

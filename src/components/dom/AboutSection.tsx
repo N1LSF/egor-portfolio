@@ -1,11 +1,38 @@
-// src/components/dom/AboutSection.tsx
-
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useAppStore } from '../../store'
+import { tr } from '../../i18n'
 import './AboutSection.css'
 
 gsap.registerPlugin(ScrollTrigger)
+
+const MOBILE_BP = 768
+
+function isMobile() {
+  return typeof window !== 'undefined' && window.innerWidth <= MOBILE_BP
+}
+
+/* Typewriter that stores original text in data attribute */
+function typewrite(el: Element, speed = 30, delay = 0) {
+  const stored = el.getAttribute('data-text')
+  const text = stored || el.textContent || ''
+  if (!stored) el.setAttribute('data-text', text)
+  el.textContent = ''
+
+  return gsap.delayedCall(delay, () => {
+    let i = 0
+    const chars = text.split('')
+    const iv = setInterval(() => {
+      if (i < chars.length) {
+        el.textContent += chars[i]
+        i++
+      } else {
+        clearInterval(iv)
+      }
+    }, speed)
+  })
+}
 
 export default function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null!)
@@ -17,6 +44,27 @@ export default function AboutSection() {
   const bioRef = useRef<HTMLDivElement>(null!)
   const nameFirstRef = useRef<HTMLSpanElement>(null!)
   const nameLastRef = useRef<HTMLSpanElement>(null!)
+  const lang = useAppStore((s) => s.lang)
+
+  /* Store original texts on first render so re-renders don't lose them */
+  const textsStored = useRef(false)
+  const storeTexts = useCallback(() => {
+    if (textsStored.current) return
+    const info = infoRef.current
+    if (!info) return
+    info.querySelectorAll('.about-value').forEach((el) => {
+      const isStatus = el.classList.contains('status-value')
+      const target = isStatus ? el.querySelector('.status-text') : el
+      if (target && !target.getAttribute('data-text')) {
+        target.setAttribute('data-text', target.textContent || '')
+      }
+    })
+    textsStored.current = true
+  }, [])
+
+  useEffect(() => {
+    storeTexts()
+  }, [storeTexts])
 
   useEffect(() => {
     const section = sectionRef.current
@@ -26,15 +74,13 @@ export default function AboutSection() {
     const corners = cornersRef.current
     const info = infoRef.current
     const bio = bioRef.current
-    if (!section) return
+    const nameFirst = nameFirstRef.current
+    const nameLast = nameLastRef.current
+    if (!section || !photo || !scanLine || !corners || !info || !bio) return
+
+    const mobile = isMobile()
 
     const ctx = gsap.context(() => {
-
-      // ═══════════════════════════════════
-      // PHASE 1: ENTRANCE ANIMATIONS
-      // (triggered once on scroll-in)
-      // ═══════════════════════════════════
-
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
@@ -43,323 +89,223 @@ export default function AboutSection() {
         },
       })
 
-      // Section fade
+      /* Section fade */
       gsap.set(section, { opacity: 0 })
       tl.to(section, { opacity: 1, duration: 0.8, ease: 'power2.out' }, 0)
 
-      // Corner marks pop in
+      /* Corners */
       const cornerEls = corners.querySelectorAll('.corner-mark')
       gsap.set(cornerEls, { opacity: 0, scale: 0 })
       tl.to(cornerEls, {
-        opacity: 1,
-        scale: 1,
-        duration: 0.5,
-        stagger: 0.08,
-        ease: 'back.out(2)',
+        opacity: 1, scale: 1,
+        duration: 0.5, stagger: 0.08, ease: 'back.out(2)',
       }, 0.2)
 
-      // Photo clipPath reveal
+      /* Photo reveal */
       gsap.set(photo, { clipPath: 'inset(0 0 100% 0)' })
       tl.to(photo, {
         clipPath: 'inset(0 0 0% 0)',
-        duration: 1.4,
-        ease: 'power4.inOut',
+        duration: 1.4, ease: 'power4.inOut',
       }, 0.3)
 
-      // Scan line first pass
+      /* Scan line entrance */
       gsap.set(scanLine, { top: '0%', opacity: 0 })
       tl.to(scanLine, { opacity: 1, duration: 0.1 }, 0.3)
-      tl.to(scanLine, {
-        top: '100%',
-        duration: 1.4,
-        ease: 'power4.inOut',
-      }, 0.3)
+      tl.to(scanLine, { top: '100%', duration: 1.4, ease: 'power4.inOut' }, 0.3)
       tl.to(scanLine, { opacity: 0, duration: 0.3 }, 1.6)
 
-      // RGB glitch flash
+      /* Glitch */
       tl.call(() => {
         photo.classList.add('glitch-flash')
         setTimeout(() => photo.classList.remove('glitch-flash'), 400)
       }, [], 1.5)
 
-      // Name reveal — split lines
-      const nameFirst = nameFirstRef.current
-      const nameLast = nameLastRef.current
+      /* Name */
       gsap.set([nameFirst, nameLast], { yPercent: 110, opacity: 0 })
-      tl.to(nameFirst, {
-        yPercent: 0,
-        opacity: 1,
-        duration: 1,
-        ease: 'power4.out',
-      }, 0.5)
-      tl.to(nameLast, {
-        yPercent: 0,
-        opacity: 1,
-        duration: 1,
-        ease: 'power4.out',
-      }, 0.65)
+      tl.to(nameFirst, { yPercent: 0, opacity: 1, duration: 1, ease: 'power4.out' }, 0.5)
+      tl.to(nameLast, { yPercent: 0, opacity: 1, duration: 1, ease: 'power4.out' }, 0.65)
 
-      // Section label
+      /* Section label */
       const sectionLabel = info.querySelector('.about-section-label')
-      gsap.set(sectionLabel, { opacity: 0, y: -10 })
-      tl.to(sectionLabel, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: 'power3.out',
-      }, 0.4)
+      if (sectionLabel) {
+        gsap.set(sectionLabel, { opacity: 0, y: -10 })
+        tl.to(sectionLabel, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 0.4)
+      }
 
-      // Separator
+      /* Separator */
       const separator = info.querySelector('.about-separator')
       if (separator) {
         gsap.set(separator, { scaleX: 0, transformOrigin: 'left center' })
-        tl.to(separator, {
-          scaleX: 1,
-          duration: 1,
-          ease: 'power4.out',
-        }, 0.9)
+        tl.to(separator, { scaleX: 1, duration: 1, ease: 'power4.out' }, 0.9)
       }
 
-      // Labels slide in
+      /* Labels */
       const labels = info.querySelectorAll('.about-label')
       labels.forEach((label, i) => {
         gsap.set(label, { opacity: 0, x: -15 })
         tl.to(label, {
-          opacity: 1,
-          x: 0,
-          duration: 0.5,
-          ease: 'power3.out',
+          opacity: 1, x: 0, duration: 0.5, ease: 'power3.out',
         }, 0.8 + i * 0.1)
       })
 
-      // Values typewriter
+      /* Values — typewriter with guaranteed visibility */
       const values = info.querySelectorAll('.about-value')
       values.forEach((value, i) => {
-        const originalContent = value.innerHTML
-        const isStatus = value.classList.contains('status-value')
+        const el = value as HTMLElement
+        const isStatus = el.classList.contains('status-value')
+        const targetNode = isStatus
+          ? el.querySelector('.status-text')
+          : el
 
-        if (isStatus) {
-          // For status row — keep the dot, type only text
-          const textNode = value.querySelector('.status-text')
-          if (textNode) {
-            const text = textNode.textContent || ''
-            textNode.textContent = ''
-            gsap.set(value, { visibility: 'visible' })
-            tl.call(() => {
-              let ci = 0
-              const chars = text.split('')
-              const iv = setInterval(() => {
-                if (ci < chars.length) {
-                  textNode.textContent += chars[ci]
-                  ci++
-                } else clearInterval(iv)
-              }, 35)
-            }, [], 1.0 + i * 0.18)
-          }
-        } else {
-          const text = value.textContent || ''
-          value.textContent = ''
-          gsap.set(value, { visibility: 'visible' })
-          tl.call(() => {
-            let ci = 0
-            const chars = text.split('')
-            const iv = setInterval(() => {
-              if (ci < chars.length) {
-                value.textContent += chars[ci]
-                ci++
-              } else clearInterval(iv)
-            }, 30)
-          }, [], 1.0 + i * 0.18)
-        }
+        if (!targetNode) return
+
+        /* Make visible immediately — text starts empty, fills via typewriter */
+        el.style.visibility = 'visible'
+
+        const baseDelay = 1.0 + i * 0.18
+        tl.call(() => {
+          typewrite(targetNode, isStatus ? 35 : 30, 0)
+        }, [], baseDelay)
       })
 
-      // Status dot activate
+      /* Status dot */
       const statusDot = info.querySelector('.status-indicator')
       if (statusDot) {
         tl.call(() => statusDot.classList.add('active'), [], 2.2)
       }
 
-      // Bio lines entrance
+      /* Bio lines */
       const bioLines = bio.querySelectorAll('.bio-line')
       bioLines.forEach((line, i) => {
         gsap.set(line, { opacity: 0, y: 20, filter: 'blur(6px)' })
         tl.to(line, {
-          opacity: 1,
-          y: 0,
-          filter: 'blur(0px)',
-          duration: 0.8,
-          ease: 'power3.out',
+          opacity: 1, y: 0, filter: 'blur(0px)',
+          duration: 0.8, ease: 'power3.out',
         }, 1.4 + i * 0.12)
       })
 
-      // ═══════════════════════════════════
-      // PHASE 2: SCROLL-DRIVEN MOTION
-      // (continuous parallax while scrolling through)
-      // ═══════════════════════════════════
-
-      // Photo parallax — moves slower (sticky feel)
-      gsap.to(photoWrapper, {
-        yPercent: -15,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1,
-        },
-      })
-
-      // Photo scale breathing on scroll
-      gsap.fromTo(photo.querySelector('.about-photo-img'), 
-        { scale: 1.15 },
-        {
-          scale: 1,
-          ease: 'none',
+      /* ── Parallax (desktop only) ── */
+      if (!mobile) {
+        gsap.to(photoWrapper, {
+          yPercent: -15, ease: 'none',
           scrollTrigger: {
-            trigger: section,
-            start: 'top bottom',
-            end: 'center center',
-            scrub: 1.5,
-          },
-        }
-      )
-
-      // Info block — counter parallax (moves up faster)
-      gsap.to(info.closest('.about-info'), {
-        yPercent: -8,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: 1.2,
-        },
-      })
-
-      // Name horizontal split on scroll
-      gsap.to(nameFirst, {
-        x: -30,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top center',
-          end: 'bottom top',
-          scrub: 2,
-        },
-      })
-
-      gsap.to(nameLast, {
-        x: 20,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top center',
-          end: 'bottom top',
-          scrub: 2,
-        },
-      })
-
-      // Corner marks breathing — scale pulse on scroll
-      gsap.to(cornerEls, {
-        scale: 1.15,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top center',
-          end: 'bottom top',
-          scrub: 2,
-        },
-      })
-
-      // Data rows stagger parallax
-      const rows = info.querySelectorAll('.about-row')
-      rows.forEach((row, i) => {
-        gsap.to(row, {
-          y: -(10 + i * 6),
-          ease: 'none',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top center',
-            end: 'bottom top',
-            scrub: 1 + i * 0.3,
+            trigger: section, start: 'top bottom',
+            end: 'bottom top', scrub: 1,
           },
         })
-      })
 
-      // Bio lines — progressive opacity scrub (highlight on scroll)
-      bioLines.forEach((line, i) => {
+        gsap.fromTo(
+          photo.querySelector('.about-photo-img'),
+          { scale: 1.15 },
+          {
+            scale: 1, ease: 'none',
+            scrollTrigger: {
+              trigger: section, start: 'top bottom',
+              end: 'center center', scrub: 1.5,
+            },
+          },
+        )
+
+        const aboutInfo = info.closest('.about-info')
+        if (aboutInfo) {
+          gsap.to(aboutInfo, {
+            yPercent: -8, ease: 'none',
+            scrollTrigger: {
+              trigger: section, start: 'top bottom',
+              end: 'bottom top', scrub: 1.2,
+            },
+          })
+        }
+
+        gsap.to(nameFirst, {
+          x: -30, ease: 'none',
+          scrollTrigger: {
+            trigger: section, start: 'top center',
+            end: 'bottom top', scrub: 2,
+          },
+        })
+
+        gsap.to(nameLast, {
+          x: 20, ease: 'none',
+          scrollTrigger: {
+            trigger: section, start: 'top center',
+            end: 'bottom top', scrub: 2,
+          },
+        })
+
+        gsap.to(cornerEls, {
+          scale: 1.15, ease: 'none',
+          scrollTrigger: {
+            trigger: section, start: 'top center',
+            end: 'bottom top', scrub: 2,
+          },
+        })
+
+        const rows = info.querySelectorAll('.about-row')
+        rows.forEach((row, i) => {
+          gsap.to(row, {
+            y: -(10 + i * 6), ease: 'none',
+            scrollTrigger: {
+              trigger: section, start: 'top center',
+              end: 'bottom top', scrub: 1 + i * 0.3,
+            },
+          })
+        })
+
+        gsap.fromTo(scanLine,
+          { top: '0%', opacity: 0.4 },
+          {
+            top: '100%', ease: 'none',
+            scrollTrigger: {
+              trigger: section, start: 'top center',
+              end: 'bottom center', scrub: 2,
+            },
+          },
+        )
+      }
+
+      /* Bio color scroll (all devices) */
+      const bioLines2 = bio.querySelectorAll('.bio-line')
+      bioLines2.forEach((line) => {
         gsap.to(line, {
-          color: 'rgba(255, 255, 255, 0.85)',
-          ease: 'none',
+          color: 'rgba(255, 255, 255, 0.85)', ease: 'none',
           scrollTrigger: {
-            trigger: line,
-            start: 'top 80%',
-            end: 'top 50%',
-            scrub: 1,
+            trigger: line, start: 'top 85%',
+            end: 'top 55%', scrub: 1,
           },
         })
       })
 
-      // Scan line — scrub-driven second pass (ambient)
-      gsap.fromTo(scanLine,
-        { top: '0%', opacity: 0.4 },
-        {
-          top: '100%',
-          ease: 'none',
-          scrollTrigger: {
-            trigger: section,
-            start: 'top center',
-            end: 'bottom center',
-            scrub: 2,
-          },
+      /* ── Mouse tilt (desktop only) ── */
+      if (!mobile) {
+        const handleMouseMove = (e: MouseEvent) => {
+          const rect = photo.getBoundingClientRect()
+          const x = (e.clientX - rect.left) / rect.width - 0.5
+          const y = (e.clientY - rect.top) / rect.height - 0.5
+          gsap.to(photo.querySelector('.about-photo-img'), {
+            x: x * 25, y: y * 20,
+            rotateY: x * 5, rotateX: -y * 5,
+            duration: 1, ease: 'power2.out',
+          })
+          gsap.to(cornerEls, {
+            scale: 1.1 + Math.abs(x) * 0.2,
+            duration: 0.5, ease: 'power2.out',
+          })
         }
-      )
 
-      // ═══════════════════════════════════
-      // PHASE 3: HOVER INTERACTIONS
-      // ═══════════════════════════════════
+        const handleMouseLeave = () => {
+          gsap.to(photo.querySelector('.about-photo-img'), {
+            x: 0, y: 0, rotateY: 0, rotateX: 0,
+            duration: 0.8, ease: 'power2.out',
+          })
+          gsap.to(cornerEls, {
+            scale: 1, duration: 0.6, ease: 'power2.out',
+          })
+        }
 
-      const handleMouseMove = (e: MouseEvent) => {
-        const rect = photo.getBoundingClientRect()
-        const x = (e.clientX - rect.left) / rect.width - 0.5
-        const y = (e.clientY - rect.top) / rect.height - 0.5
-
-        gsap.to(photo.querySelector('.about-photo-img'), {
-          x: x * 25,
-          y: y * 20,
-          rotateY: x * 5,
-          rotateX: -y * 5,
-          duration: 1,
-          ease: 'power2.out',
-        })
-
-        // Corner marks react to hover
-        gsap.to(cornerEls, {
-          scale: 1.1 + Math.abs(x) * 0.2,
-          duration: 0.5,
-          ease: 'power2.out',
-        })
+        photo.addEventListener('mousemove', handleMouseMove)
+        photo.addEventListener('mouseleave', handleMouseLeave)
       }
-
-      const handleMouseLeave = () => {
-        gsap.to(photo.querySelector('.about-photo-img'), {
-          x: 0,
-          y: 0,
-          rotateY: 0,
-          rotateX: 0,
-          duration: 0.8,
-          ease: 'power2.out',
-        })
-        gsap.to(cornerEls, {
-          scale: 1,
-          duration: 0.6,
-          ease: 'power2.out',
-        })
-      }
-
-      photo.addEventListener('mousemove', handleMouseMove)
-      photo.addEventListener('mouseleave', handleMouseLeave)
-
     }, section)
 
     return () => ctx.revert()
@@ -369,7 +315,6 @@ export default function AboutSection() {
     <section ref={sectionRef} className="about-section">
       <div className="about-grid">
 
-        {/* ── Photo Block ── */}
         <div ref={photoWrapperRef} className="about-photo-wrapper">
           <div ref={cornersRef} className="corner-marks">
             <span className="corner-mark tl" />
@@ -396,11 +341,10 @@ export default function AboutSection() {
           </div>
         </div>
 
-        {/* ── Info Block ── */}
         <div className="about-info">
           <div ref={infoRef} className="about-data">
             <div className="about-section-label">
-              <span className="label-slash">//</span> IDENTIFICATION
+              <span className="label-slash">//</span> {tr('about.label', lang)}
             </div>
 
             <h2 className="about-name">
@@ -415,43 +359,34 @@ export default function AboutSection() {
             <div className="about-separator" />
 
             <div className="about-row">
-              <span className="about-label">ROLE</span>
-              <span className="about-value">Creative Developer</span>
+              <span className="about-label">{tr('about.role.label', lang)}</span>
+              <span className="about-value">{tr('about.role.value', lang)}</span>
             </div>
             <div className="about-row">
-              <span className="about-label">EXPERIENCE</span>
-              <span className="about-value">2+ Years</span>
+              <span className="about-label">{tr('about.exp.label', lang)}</span>
+              <span className="about-value">{tr('about.exp.value', lang)}</span>
             </div>
             <div className="about-row">
-              <span className="about-label">STACK</span>
-              <span className="about-value">React / Three.js / GSAP</span>
+              <span className="about-label">{tr('about.stack.label', lang)}</span>
+              <span className="about-value">{tr('about.stack.value', lang)}</span>
             </div>
             <div className="about-row">
-              <span className="about-label">APPROACH</span>
-              <span className="about-value">Code-only, no templates</span>
+              <span className="about-label">{tr('about.approach.label', lang)}</span>
+              <span className="about-value">{tr('about.approach.value', lang)}</span>
             </div>
             <div className="about-row">
-              <span className="about-label">STATUS</span>
+              <span className="about-label">{tr('about.status.label', lang)}</span>
               <span className="about-value status-value">
                 <span className="status-indicator" />
-                <span className="status-text">Available for work</span>
+                <span className="status-text">{tr('about.status.value', lang)}</span>
               </span>
             </div>
           </div>
 
           <div ref={bioRef} className="about-bio">
-            <p className="bio-line">
-              I build websites entirely from scratch — no WordPress,
-              no page builders, no shortcuts.
-            </p>
-            <p className="bio-line">
-              Every project starts with an empty file and ends with
-              pixel-perfect, high-performance code that feels alive.
-            </p>
-            <p className="bio-line">
-              My focus is on premium motion design, 3D experiences
-              and interfaces that leave a lasting impression.
-            </p>
+            <p className="bio-line">{tr('about.bio.1', lang)}</p>
+            <p className="bio-line">{tr('about.bio.2', lang)}</p>
+            <p className="bio-line">{tr('about.bio.3', lang)}</p>
           </div>
         </div>
       </div>

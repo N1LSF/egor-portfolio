@@ -1,8 +1,7 @@
 /* src/components/dom/AboutSection.css */
 
 /* ═══════════════════════════════════════
-   ABOUT SECTION — HUD / Scan Aesthetic
-   with scroll-driven motion design
+   ABOUT SECTION
    ═══════════════════════════════════════ */
 
 .about-section {
@@ -17,7 +16,6 @@
   pointer-events: auto;
 }
 
-/* ── Grid Layout ── */
 .about-grid {
   display: grid;
   grid-template-columns: 0.9fr 1.1fr;
@@ -40,7 +38,6 @@
   will-change: transform;
 }
 
-/* ── Corner Marks (targeting frame) ── */
 .corner-marks {
   position: absolute;
   inset: -14px;
@@ -63,42 +60,30 @@
   transition: background 0.4s ease;
 }
 
-.corner-mark::before {
-  width: 24px;
-  height: 1px;
-}
-
-.corner-mark::after {
-  width: 1px;
-  height: 24px;
-}
+.corner-mark::before { width: 24px; height: 1px; }
+.corner-mark::after  { width: 1px; height: 24px; }
 
 .about-photo:hover ~ .corner-marks .corner-mark::before,
 .about-photo:hover ~ .corner-marks .corner-mark::after {
   background: rgba(180, 220, 255, 0.6);
 }
 
-/* Top-left */
 .corner-mark.tl { top: 0; left: 0; }
 .corner-mark.tl::before { top: 0; left: 0; }
-.corner-mark.tl::after { top: 0; left: 0; }
+.corner-mark.tl::after  { top: 0; left: 0; }
 
-/* Top-right */
 .corner-mark.tr { top: 0; right: 0; }
 .corner-mark.tr::before { top: 0; right: 0; }
-.corner-mark.tr::after { top: 0; right: 0; }
+.corner-mark.tr::after  { top: 0; right: 0; }
 
-/* Bottom-left */
 .corner-mark.bl { bottom: 0; left: 0; }
 .corner-mark.bl::before { bottom: 0; left: 0; }
-.corner-mark.bl::after { bottom: 0; left: 0; }
+.corner-mark.bl::after  { bottom: 0; left: 0; }
 
-/* Bottom-right */
 .corner-mark.br { bottom: 0; right: 0; }
 .corner-mark.br::before { bottom: 0; right: 0; }
-.corner-mark.br::after { bottom: 0; right: 0; }
+.corner-mark.br::after  { bottom: 0; right: 0; }
 
-/* ── Photo container ── */
 .about-photo {
   position: relative;
   width: 100%;
@@ -123,7 +108,6 @@
   filter: grayscale(0) contrast(1.1) brightness(1);
 }
 
-/* ── Scanlines overlay (CRT texture) ── */
 .photo-scanlines {
   position: absolute;
   inset: 0;
@@ -138,7 +122,6 @@
   z-index: 2;
 }
 
-/* ── Animated scan line (entrance) ── */
 .scan-line {
   position: absolute;
   left: 0;
@@ -160,7 +143,6 @@
   opacity: 0;
 }
 
-/* ── Ambient scan line (always looping) ── */
 .ambient-scan {
   position: absolute;
   left: 0;
@@ -181,38 +163,19 @@
 }
 
 @keyframes ambientScan {
-  0% { top: -2%; opacity: 0; }
-  10% { opacity: 0.6; }
-  90% { opacity: 0.6; }
+  0%   { top: -2%; opacity: 0; }
+  10%  { opacity: 0.6; }
+  90%  { opacity: 0.6; }
   100% { top: 102%; opacity: 0; }
 }
 
-/* ── RGB Glitch flash ── */
 @keyframes rgbGlitch {
-  0% {
-    filter: grayscale(0.2) contrast(1.05) brightness(0.95);
-    transform: translate(0, 0);
-  }
-  10% {
-    filter: grayscale(0) contrast(1.3) saturate(1.5) brightness(1.1);
-    transform: translate(-3px, 1px);
-  }
-  20% {
-    filter: grayscale(0) contrast(1.1) brightness(1);
-    transform: translate(3px, -1px);
-  }
-  30% {
-    filter: grayscale(0) contrast(1.4) hue-rotate(5deg);
-    transform: translate(-1px, 0);
-  }
-  50% {
-    filter: grayscale(0.2) contrast(1.05) brightness(0.95);
-    transform: translate(0, 0);
-  }
-  100% {
-    filter: grayscale(0.2) contrast(1.05) brightness(0.95);
-    transform: translate(0, 0);
-  }
+  0%   { filter: grayscale(0.2) contrast(1.05) brightness(0.95); transform: translate(0, 0); }
+  10%  { filter: grayscale(0) contrast(1.3) saturate(1.5) brightness(1.1); transform: translate(-3px, 1px); }
+  20%  { filter: grayscale(0) contrast(1.1) brightness(1); transform: translate(3px, -1px); }
+  30%  { filter: grayscale(0) contrast(1.4) hue-rotate(5deg); transform: translate(-1px, 0); }
+  50%  { filter: grayscale(0.2) contrast(1.05) brightness(0.95); transform: translate(0, 0); }
+  100% { filter: grayscale(0.2) contrast(1.05) brightness(0.95); transform: translate(0, 0); }
 }
 
 .about-photo.glitch-flash .about-photo-img {
@@ -238,14 +201,13 @@
 }
 
 @keyframes rgbSplit {
-  0% { opacity: 0; transform: translateX(0); }
-  15% { opacity: 1; transform: translateX(-4px); }
-  35% { opacity: 1; transform: translateX(4px); }
-  55% { opacity: 0.5; transform: translateX(-2px); }
+  0%   { opacity: 0; transform: translateX(0); }
+  15%  { opacity: 1; transform: translateX(-4px); }
+  35%  { opacity: 1; transform: translateX(4px); }
+  55%  { opacity: 0.5; transform: translateX(-2px); }
   100% { opacity: 0; transform: translateX(0); }
 }
 
-/* ── Photo ID tag ── */
 .photo-id-tag {
   display: flex;
   align-items: center;
@@ -281,7 +243,6 @@
   gap: 0;
 }
 
-/* ── Section label ── */
 .about-section-label {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
@@ -297,11 +258,10 @@
   margin-right: 6px;
 }
 
-/* ── Name ── */
 .about-name {
-  font-family: 'Anton', sans-serif;
+  font-family: 'Unbounded', sans-serif;
   font-size: clamp(40px, 5vw, 80px);
-  font-weight: 400;
+  font-weight: 800;
   line-height: 0.92;
   letter-spacing: -0.02em;
   text-transform: uppercase;
@@ -319,7 +279,6 @@
   will-change: transform, opacity;
 }
 
-/* ── Separator ── */
 .about-separator {
   width: 100%;
   height: 1px;
@@ -332,7 +291,6 @@
   will-change: transform;
 }
 
-/* ── Data rows ── */
 .about-row {
   display: flex;
   align-items: baseline;
@@ -368,10 +326,9 @@
   font-size: clamp(14px, 1.1vw, 17px);
   font-weight: 400;
   color: rgba(255, 255, 255, 0.7);
-  visibility: hidden;
+  /* NOTE: visibility controlled by JS now — starts visible, text starts empty */
 }
 
-/* ── Status indicator ── */
 .status-value {
   display: flex;
   align-items: center;
@@ -407,7 +364,7 @@
 }
 
 /* ═══════════════════════════════════════
-   BIO TEXT — LARGER, SCROLL-REACTIVE
+   BIO
    ═══════════════════════════════════════ */
 
 .about-bio {
@@ -425,54 +382,304 @@
 }
 
 /* ═══════════════════════════════════════
-   RESPONSIVE
+   TABLET (≤1024px)
    ═══════════════════════════════════════ */
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .about-section {
-    padding: 10vh 6vw;
+    padding: 12vh 6vw;
     min-height: auto;
   }
 
   .about-grid {
-    grid-template-columns: 1fr;
-    gap: 6vh;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 5vw;
   }
 
   .about-photo-wrapper {
-    max-width: 340px;
+    max-width: 400px;
+  }
+
+  .about-name {
+    font-size: clamp(36px, 4.5vw, 64px);
+  }
+
+  .about-label {
+    min-width: 110px;
+  }
+}
+
+/* ═══════════════════════════════════════
+   SMALL TABLET (≤768px)
+   Single column, photo centered, breathing room
+   ═══════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .about-section {
+    padding: 10vh 7vw 12vh;
+    min-height: auto;
+    align-items: flex-start;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 8vh;
+  }
+
+  .about-photo-wrapper {
+    max-width: 300px;
     margin: 0 auto;
+  }
+
+  .corner-marks {
+    inset: -10px;
+  }
+
+  .corner-mark {
+    width: 18px;
+    height: 18px;
+  }
+
+  .corner-mark::before {
+    width: 18px;
+  }
+
+  .corner-mark::after {
+    height: 18px;
+  }
+
+  .about-photo-img {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+  }
+
+  .photo-id-tag {
+    justify-content: center;
+    margin-top: 14px;
+  }
+
+  .about-info {
+    gap: 5vh;
+  }
+
+  .about-section-label {
+    margin-bottom: 2.5vh;
+  }
+
+  .about-name {
+    font-size: clamp(32px, 8vw, 52px);
+    margin-bottom: 3vh;
+  }
+
+  .about-separator {
+    margin-bottom: 3vh;
+  }
+
+  .about-row {
+    padding: 1.4vh 0;
+    gap: 3vw;
   }
 
   .about-label {
     min-width: 100px;
+    font-size: 9px;
+  }
+
+  .about-value {
+    font-size: 14px;
+  }
+
+  .about-bio {
+    margin-top: 4vh;
   }
 
   .bio-line {
-    font-size: clamp(14px, 3.5vw, 18px);
+    font-size: clamp(14px, 3.8vw, 18px);
+    line-height: 1.8;
+  }
+
+  .about-row:hover {
+    border-bottom-color: rgba(255, 255, 255, 0.035);
+  }
+
+  .about-row:hover .about-label {
+    color: rgba(255, 255, 255, 0.2);
+  }
+
+  .about-photo:hover .about-photo-img {
+    filter: grayscale(0.2) contrast(1.05) brightness(0.95);
+  }
+
+  .about-photo:hover ~ .corner-marks .corner-mark::before,
+  .about-photo:hover ~ .corner-marks .corner-mark::after {
+    background: rgba(255, 255, 255, 0.35);
   }
 }
 
+/* ═══════════════════════════════════════
+   MOBILE (≤600px)
+   Stacked rows, spacious layout
+   ═══════════════════════════════════════ */
+
 @media (max-width: 600px) {
   .about-section {
-    padding: 8vh 5vw;
+    padding: 8vh 6vw 10vh;
+  }
+
+  .about-grid {
+    gap: 7vh;
   }
 
   .about-photo-wrapper {
-    max-width: 280px;
+    max-width: 260px;
+  }
+
+  .corner-marks {
+    inset: -8px;
+  }
+
+  .corner-mark {
+    width: 14px;
+    height: 14px;
+  }
+
+  .corner-mark::before {
+    width: 14px;
+  }
+
+  .corner-mark::after {
+    height: 14px;
+  }
+
+  .about-section-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    margin-bottom: 2.5vh;
+  }
+
+  .about-name {
+    font-size: clamp(28px, 9vw, 44px);
+    margin-bottom: 2.5vh;
+  }
+
+  .about-separator {
+    margin-bottom: 3vh;
   }
 
   .about-row {
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
+    padding: 1.8vh 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   }
 
   .about-label {
     min-width: unset;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: rgba(255, 255, 255, 0.25);
+  }
+
+  .about-value {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.5;
+  }
+
+  .status-value {
+    gap: 8px;
+  }
+
+  .about-info {
+    gap: 5vh;
+  }
+
+  .about-bio {
+    margin-top: 4vh;
   }
 
   .bio-line {
-    font-size: clamp(14px, 4vw, 17px);
-    line-height: 1.8;
+    font-size: clamp(14px, 4.2vw, 17px);
+    line-height: 1.75;
+    margin-bottom: 0.8em;
+  }
+
+  .bio-line:last-child {
+    margin-bottom: 0;
+  }
+
+  .ambient-scan {
+    opacity: 0.3;
+  }
+}
+
+/* ═══════════════════════════════════════
+   SMALL MOBILE (≤380px)
+   iPhone SE, compact Galaxy
+   ═══════════════════════════════════════ */
+
+@media (max-width: 380px) {
+  .about-section {
+    padding: 7vh 5vw 9vh;
+  }
+
+  .about-grid {
+    gap: 6vh;
+  }
+
+  .about-photo-wrapper {
+    max-width: 220px;
+  }
+
+  .corner-marks {
+    inset: -6px;
+  }
+
+  .corner-mark {
+    width: 12px;
+    height: 12px;
+  }
+
+  .corner-mark::before {
+    width: 12px;
+  }
+
+  .corner-mark::after {
+    height: 12px;
+  }
+
+  .about-name {
+    font-size: clamp(24px, 8.5vw, 36px);
+    margin-bottom: 2vh;
+  }
+
+  .about-row {
+    padding: 1.6vh 0;
+    gap: 5px;
+  }
+
+  .about-label {
+    font-size: 8px;
+  }
+
+  .about-value {
+    font-size: 14px;
+  }
+
+  .bio-line {
+    font-size: 13px;
+    line-height: 1.7;
+    margin-bottom: 0.7em;
+  }
+
+  .photo-id-tag {
+    font-size: 9px;
+    gap: 6px;
+  }
+
+  .id-tag-dot {
+    width: 4px;
+    height: 4px;
   }
 }
