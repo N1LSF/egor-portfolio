@@ -24,7 +24,7 @@ export const useAppStore = create<AppState>((set) => ({
   sphereHovered: false,
   mouse: { x: 0, y: 0 },
   windowSize: { w: window.innerWidth, h: window.innerHeight },
-  lang: 'en',
+  lang: 'ru',
   worksHoveredIndex: null,
   setLoadProgress: (v) => set({ loadProgress: v }),
   setIsLoaded: () => set({ isLoaded: true }),
