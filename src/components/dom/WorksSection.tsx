@@ -20,7 +20,7 @@ const PROJECTS: Project[] = [
     key: '1',
     year: '2025',
     image: '/works/aesthetics.jpg',
-    url: 'https://xn----7sbbbhq0c9ajkb.xn--p1ai/services.html',
+    url: 'https://микс-красоты.рф',
     slug: 'aesthetics',
   },
   {
