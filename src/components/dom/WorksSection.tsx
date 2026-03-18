@@ -90,88 +90,99 @@ export default function WorksSection() {
     [showToast]
   )
 
-  // Horizontal scroll + fade-out buffer
-  useEffect(() => {
-    const section = sectionRef.current
-    const pin = pinRef.current
-    const track = trackRef.current
-    if (!section || !pin || !track) return
+// Horizontal scroll + fade-out buffer
+useEffect(() => {
+  const section = sectionRef.current
+  const pin = pinRef.current
+  const track = trackRef.current
+  if (!section || !pin || !track) return
 
-    const ctx = gsap.context(() => {
-      const getScrollAmount = () => -(track.scrollWidth - window.innerWidth + 80)
-      const getEnd = () => Math.abs(getScrollAmount()) + window.innerHeight * 0.7
+  const ctx = gsap.context(() => {
+    // Расстояние горизонтального скролла (контент)
+    const getScrollAmount = () => -(track.scrollWidth - window.innerWidth + 80)
+    
+    // Буфер ПОСЛЕ контента — для плавного ухода
+    const bufferZone = window.innerHeight * 0.5
+    
+    // Полная длина скролла = контент + буфер
+    const getEnd = () => Math.abs(getScrollAmount()) + bufferZone
 
-      const tween = gsap.to(track, {
-        x: getScrollAmount,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: section,
-          start: 'top top',
-          end: () => `+=${getEnd()}`,
-          pin: pin,
-          scrub: 1.2,
-          invalidateOnRefresh: true,
-          anticipatePin: 1,
-          onUpdate: (self) => {
-            if (progressFillRef.current) {
-              const p = Math.min(self.progress / 0.85, 1)
-              progressFillRef.current.style.width = `${p * 100}%`
-            }
-          },
-        },
-      })
-
-      gsap.to(pin, {
-        opacity: 0,
-        scale: 0.97,
-        filter: 'blur(6px)',
-        ease: 'power2.inOut',
-        scrollTrigger: {
-          trigger: section,
-          start: () => `top+=${Math.abs(getScrollAmount()) * 0.92} top`,
-          end: () => `top+=${getEnd()} top`,
-          scrub: 1.2,
-          invalidateOnRefresh: true,
-        },
-      })
-
-      cardsRef.current.forEach((card) => {
-        if (!card) return
-        gsap.fromTo(
-          card,
-          { rotateY: 8, scale: 0.9, opacity: 0.4 },
-          {
-            rotateY: 0,
-            scale: 1,
-            opacity: 1,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: card,
-              containerAnimation: tween,
-              start: 'left 90%',
-              end: 'left 40%',
-              scrub: 1,
-            },
+    // Горизонтальный скролл — только на дистанции контента
+    const tween = gsap.to(track, {
+      x: getScrollAmount,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        // Горизонтальный скролл заканчивается ДО буфера
+        end: () => `+=${Math.abs(getScrollAmount())}`,
+        pin: pin,
+        scrub: 1.2,
+        invalidateOnRefresh: true,
+        anticipatePin: 1,
+        onUpdate: (self) => {
+          if (progressFillRef.current) {
+            progressFillRef.current.style.width = `${self.progress * 100}%`
           }
-        )
-        gsap.to(card, {
-          rotateY: -8,
-          scale: 0.9,
-          opacity: 0.4,
-          ease: 'power2.in',
+        },
+      },
+    })
+
+    // Fade-out — ТОЛЬКО в буферной зоне (после контента)
+    gsap.to(pin, {
+      opacity: 0,
+      scale: 0.97,
+      filter: 'blur(6px)',
+      ease: 'power2.inOut',
+      scrollTrigger: {
+        trigger: section,
+        // Начинаем fade когда контент ПОЛНОСТЬЮ доскроллен
+        start: () => `top+=${Math.abs(getScrollAmount())} top`,
+        // Заканчиваем в конце буфера
+        end: () => `top+=${Math.abs(getScrollAmount()) + bufferZone} top`,
+        scrub: 1,
+        invalidateOnRefresh: true,
+      },
+    })
+
+    // Per-card animations
+    cardsRef.current.forEach((card) => {
+      if (!card) return
+      gsap.fromTo(
+        card,
+        { rotateY: 8, scale: 0.9, opacity: 0.4 },
+        {
+          rotateY: 0,
+          scale: 1,
+          opacity: 1,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: card,
             containerAnimation: tween,
-            start: 'right 60%',
-            end: 'right 10%',
+            start: 'left 90%',
+            end: 'left 40%',
             scrub: 1,
           },
-        })
+        }
+      )
+      gsap.to(card, {
+        rotateY: -8,
+        scale: 0.9,
+        opacity: 0.4,
+        ease: 'power2.in',
+        scrollTrigger: {
+          trigger: card,
+          containerAnimation: tween,
+          start: 'right 60%',
+          end: 'right 10%',
+          scrub: 1,
+        },
       })
-    }, section)
+    })
+  }, section)
 
-    return () => ctx.revert()
-  }, [])
+  return () => ctx.revert()
+}, [])
 
   // Header entrance
   useEffect(() => {
