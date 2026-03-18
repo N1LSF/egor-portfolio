@@ -211,6 +211,18 @@ export const t: Translations = {
     ru: 'Это приблизительная оценка. Финальная стоимость зависит от сложности и обсуждается лично.',
   },
   'calc.cta': { en: 'DISCUSS PROJECT', ru: 'ОБСУДИТЬ ПРОЕКТ' },
+  'works.visit': {
+    en: 'VISIT SITE',
+    ru: 'ПЕРЕЙТИ НА САЙТ',
+  },
+  'works.unavailable_short': {
+    en: 'UNAVAILABLE',
+    ru: 'НЕДОСТУПЕН',
+  },
+  'works.unavailable': {
+    en: 'Unfortunately, the site owner didn\'t renew hosting — the site is unavailable',
+    ru: 'К сожалению, владелец не оплатил хостинг — сайт недоступен',
+  },
 }
 
 export function tr(key: string, lang: Lang): string {
