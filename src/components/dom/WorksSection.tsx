@@ -90,7 +90,7 @@ export default function WorksSection() {
     [showToast]
   )
 
-// Horizontal scroll + fade-out buffer
+// Horizontal scroll — last card centers, then continue
 useEffect(() => {
   const section = sectionRef.current
   const pin = pinRef.current
@@ -98,23 +98,31 @@ useEffect(() => {
   if (!section || !pin || !track) return
 
   const ctx = gsap.context(() => {
-    // Расстояние горизонтального скролла (контент)
-    const getScrollAmount = () => -(track.scrollWidth - window.innerWidth + 80)
-    
-    // Буфер ПОСЛЕ контента — для плавного ухода
-    const bufferZone = window.innerHeight * 0.5
-    
-    // Полная длина скролла = контент + буфер
-    const getEnd = () => Math.abs(getScrollAmount()) + bufferZone
+    // Рассчитываем так, чтобы последняя карточка оказалась по центру
+    const getScrollAmount = () => {
+      const trackWidth = track.scrollWidth
+      const viewportWidth = window.innerWidth
+      const lastCard = cardsRef.current[cardsRef.current.length - 1]
+      
+      if (!lastCard) return -(trackWidth - viewportWidth)
+      
+      // Позиция последней карточки относительно track
+      const lastCardLeft = lastCard.offsetLeft
+      const lastCardWidth = lastCard.offsetWidth
+      
+      // Центрируем последнюю карточку
+      const centerOffset = (viewportWidth - lastCardWidth) / 2
+      
+      // Итоговое смещение: карточка должна быть по центру
+      return -(lastCardLeft - centerOffset)
+    }
 
-    // Горизонтальный скролл — только на дистанции контента
     const tween = gsap.to(track, {
       x: getScrollAmount,
       ease: 'none',
       scrollTrigger: {
         trigger: section,
         start: 'top top',
-        // Горизонтальный скролл заканчивается ДО буфера
         end: () => `+=${Math.abs(getScrollAmount())}`,
         pin: pin,
         scrub: 1.2,
@@ -128,24 +136,7 @@ useEffect(() => {
       },
     })
 
-    // Fade-out — ТОЛЬКО в буферной зоне (после контента)
-    gsap.to(pin, {
-      opacity: 0,
-      scale: 0.97,
-      filter: 'blur(6px)',
-      ease: 'power2.inOut',
-      scrollTrigger: {
-        trigger: section,
-        // Начинаем fade когда контент ПОЛНОСТЬЮ доскроллен
-        start: () => `top+=${Math.abs(getScrollAmount())} top`,
-        // Заканчиваем в конце буфера
-        end: () => `top+=${Math.abs(getScrollAmount()) + bufferZone} top`,
-        scrub: 1,
-        invalidateOnRefresh: true,
-      },
-    })
-
-    // Per-card animations
+    // Per-card entrance animations
     cardsRef.current.forEach((card) => {
       if (!card) return
       gsap.fromTo(
@@ -160,11 +151,12 @@ useEffect(() => {
             trigger: card,
             containerAnimation: tween,
             start: 'left 90%',
-            end: 'left 40%',
+            end: 'left 50%',
             scrub: 1,
           },
         }
       )
+      // Убираем exit-анимацию для последней карточки — она остаётся по центру
       gsap.to(card, {
         rotateY: -8,
         scale: 0.9,
@@ -173,7 +165,7 @@ useEffect(() => {
         scrollTrigger: {
           trigger: card,
           containerAnimation: tween,
-          start: 'right 60%',
+          start: 'right 50%',
           end: 'right 10%',
           scrub: 1,
         },
