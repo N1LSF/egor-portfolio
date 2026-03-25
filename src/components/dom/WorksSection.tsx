@@ -25,14 +25,14 @@ const PROJECTS: Project[] = [
   },
   {
     key: '2',
-    year: '2025',
+    year: '2026',
     image: '/works/startup.jpg',
     url: 'https://student-startup-challenge.site',
     slug: 'startup',
   },
   {
     key: '3',
-    year: '2024',
+    year: '2026',
     image: '/works/opera.jpg',
     url: 'https://opera-read.ru',
     slug: 'opera',
